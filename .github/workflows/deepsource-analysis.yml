@@ -17,8 +17,7 @@ jobs:
           go-version: 1.22.3
 
       - name: Install DeepSource CLI
-        run: |
-          curl https://deepsource.io/cli | sh
+        run: curl https://deepsource.io/cli | sh
 
       - name: Run DeepSource analysis
-        run: deepsource report --analyzer go --directory .
+        run: ./bin/deepsource report --analyzer go --directory 

@@ -17,8 +17,11 @@ jobs:
 
       - name: Download DeepSource CLI
         run: |
-          wget -q https://deepsource.io/cli/linux/deepsource -O deepsource
+          wget -q https://deepsource.io/cli/releases/latest/download/deepsource-linux-amd64 -O deepsource
           chmod +x deepsource
+
+      - name: Verify DeepSource CLI installation
+        run: ./deepsource version
 
       - name: Run DeepSource analysis
         run: ./deepsource report --analyzer go

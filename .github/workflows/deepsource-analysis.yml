@@ -1,10 +1,9 @@
-name: DeepSource Analysis
+name: Run DeepSource Analysis
 
 on: [push, pull_request]
 
 jobs:
   analyze:
-    name: Run DeepSource Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -18,11 +17,8 @@ jobs:
 
       - name: Download DeepSource CLI
         run: |
-          wget -q https://deepsource.io/cli/releases/deepsource-linux-amd64 -O deepsource
+          wget -q https://deepsource.io/cli/linux/deepsource -O deepsource
           chmod +x deepsource
-
-      - name: Verify DeepSource CLI installation
-        run: ./deepsource --help
 
       - name: Run DeepSource analysis
         run: ./deepsource report --analyzer go

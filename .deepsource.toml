@@ -2,19 +2,9 @@ version = 1
 
 [[analyzers]]
 name = "go"
-enabled = true
 
   [analyzers.meta]
-  import_paths = ["github.com/jagritiii/chat-app"]
+  import_root = "github.com/jagritiii/chat-app"
 
 [[analyzers]]
 name = "test-coverage"
-enabled = true
-
-[[analyzers]]
-name = "govet"
-enabled = true
-
-[[analyzers]]
-name = "golint"
-enabled = true

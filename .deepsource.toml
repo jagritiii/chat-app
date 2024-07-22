@@ -5,5 +5,16 @@ name = "go"
 enabled = true
 
   [analyzers.meta]
-  import_root = "github.com/jagritiii/chat-app"
-   runtime_version = "1.18"
+  import_paths = ["github.com/your-username/your-repo-name"]
+
+[[analyzers]]
+name = "test-coverage"
+enabled = true
+
+[[analyzers]]
+name = "govet"
+enabled = true
+
+[[analyzers]]
+name = "golint"
+enabled = true

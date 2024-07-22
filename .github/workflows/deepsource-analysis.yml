@@ -1,0 +1,22 @@
+name: DeepSource Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deepsource:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run DeepSource Analysis
+        run: |
+          curl https://deepsource.io/cli | sh
+          ./bin/deepsource analyze --dsn ${{ secrets.DEEPSOURCE_DSN }}

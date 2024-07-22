@@ -19,5 +19,8 @@ jobs:
       - name: Install DeepSource CLI
         run: curl https://deepsource.io/cli | sh
 
+      - name: Verify DeepSource CLI installation
+        run: ./bin/deepsource --version
+
       - name: Run DeepSource analysis
-        run: ./bin/deepsource report --analyzer go --directory 
+        run: ./bin/deepsource report --analyzer go

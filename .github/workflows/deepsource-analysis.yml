@@ -14,13 +14,15 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.22.3
+          go-version: 1.16
 
-      - name: Install DeepSource CLI
-        run: curl https://deepsource.io/cli | sh
+      - name: Download DeepSource CLI
+        run: |
+          wget -q https://deepsource.io/cli/releases/deepsource-linux-amd64 -O deepsource
+          chmod +x deepsource
 
       - name: Verify DeepSource CLI installation
-        run: ./bin/deepsource --version
+        run: ./deepsource --help
 
       - name: Run DeepSource analysis
-        run: ./bin/deepsource report --analyzer go
+        run: ./deepsource report --analyzer go

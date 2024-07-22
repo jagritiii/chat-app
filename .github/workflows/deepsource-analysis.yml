@@ -1,29 +1,24 @@
-name: DeepSource
-on:
-  push:
-    branches:
-      - main  # or your default branch
-  pull_request:
-    types: [opened, synchronize, reopened]
+name: DeepSource Analysis
+
+on: [push, pull_request]
 
 jobs:
   analyze:
-    name: Analyze
+    name: Run DeepSource Analysis
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.x'  # Use the Go version your project requires
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.22.3
 
-    - name: Install DeepSource CLI
-      run: curl https://deepsource.io/cli | sh
+      - name: Install DeepSource CLI
+        run: |
+          curl https://deepsource.io/cli | sh
 
-    - name: Analyze with DeepSource
-      env:
-        DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
-      run: ./bin/deepsource analyze --coverage-file cover.out
+      - name: Run DeepSource analysis
+        run: deepsource report --analyzer go --directory .

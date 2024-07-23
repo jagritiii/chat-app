@@ -4,10 +4,10 @@ FROM golang:1.20 AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy go mod and sum files
-COPY go.mod go.sum ./
+# Copy go mod file
+COPY go.mod ./
 
-# Download all dependencies
+# Download all dependencies and generate go.sum
 RUN go mod download
 
 # Copy the source from the current directory to the working Directory inside the container

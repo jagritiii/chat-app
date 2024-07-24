@@ -4,4 +4,8 @@ import "fmt"
 
 func main() {
 	fmt.Println("hello world")
+	for {
+
+	}
+	panic("idnai")
 }

@@ -7,4 +7,8 @@ func main() {
 	for {
 
 	}
+	panic("idnai")
+	for {
+
+	}
 }

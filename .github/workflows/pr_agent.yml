@@ -10,7 +10,7 @@ jobs:
       issues: write
       pull-requests: write
       contents: write
-    name: Run pr agent on every pull request, respond to user comments
+    name: Run PR agent on every pull request, respond to user comments
     steps:
       - name: PR Agent action step
         id: pragent
@@ -20,7 +20,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   comment_on_commit:
-    if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.event.sender.type != 'Bot' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

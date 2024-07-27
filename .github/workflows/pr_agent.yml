@@ -4,13 +4,12 @@ on:
   issue_comment:
 jobs:
   pr_agent_job:
-    if: ${{ github.event.sender.type != 'Bot' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
       contents: write
-    name: Run PR agent on every pull request, respond to user comments
+    name: Run PR Agent on every pull request, respond to user comments
     steps:
       - name: PR Agent action step
         id: pragent
@@ -20,7 +19,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   comment_on_commit:
-    if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.event.sender.type != 'Bot' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: pr_agent_job
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

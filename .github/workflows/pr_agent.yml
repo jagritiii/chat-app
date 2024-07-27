@@ -32,5 +32,5 @@ jobs:
           PR_NUMBER=$(jq -r .pull_request.number < "$GITHUB_EVENT_PATH")
           curl -s -H "Authorization: token $GITHUB_TOKEN" \
                -X POST \
-               -d "{\"body\": \"Please remember to add an '/improve' comment after adding new commits\"}" \
+               -d "{\"body\": \"/Please remember to add an '/improve' comment after adding new commits\"}" \
                "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"

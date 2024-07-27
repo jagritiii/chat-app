@@ -1,6 +1,6 @@
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review]
+    types: [opened, reopened, ready_for_review, synchronize]
   issue_comment:
 jobs:
   pr_agent_job:
@@ -18,3 +18,19 @@ jobs:
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  comment_on_commit:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post `/improve` comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(jq -r .pull_request.number < "$GITHUB_EVENT_PATH")
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+               -X POST \
+               -d "{\"body\": \"/improve\"}" \
+               "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"

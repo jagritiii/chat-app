@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    needs: pr_agent_job
     name: Post `/improve` Comment After Commit
     steps:
       - name: Set up jq

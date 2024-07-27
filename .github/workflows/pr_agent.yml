@@ -2,7 +2,6 @@ on:
   pull_request:
     types: [opened, reopened, ready_for_review, synchronize]
   issue_comment:
-
 jobs:
   pr_agent_job:
     if: ${{ github.event.sender.type != 'Bot' }}
@@ -11,9 +10,9 @@ jobs:
       issues: write
       pull-requests: write
       contents: write
-    name: Run PR Agent on Every Pull Request, Respond to User Comments
+    name: Run pr agent on every pull request, respond to user comments
     steps:
-      - name: PR Agent Action Step
+      - name: PR Agent action step
         id: pragent
         uses: Codium-ai/pr-agent@main
         env:
@@ -22,26 +21,16 @@ jobs:
 
   comment_on_commit:
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
-    needs: pr_agent_job
     runs-on: ubuntu-latest
     permissions:
-      issues: write
-    name: Post Reminder Comment After PR Agent
+      pull-requests: write
     steps:
-      - name: Set up jq
-        run: sudo apt-get install jq -y
-
-      - name: Post `/improve` Reminder Comment
+      - name: Post `/improve` comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER=$(jq -r .pull_request.number < "$GITHUB_EVENT_PATH")
-          PR_AUTHOR=$(jq -r .pull_request.user.login < "$GITHUB_EVENT_PATH")
-          
-          # Customize the reminder message
-          COMMENT_BODY="Hi @${PR_AUTHOR}, please remember to add an '/improve' comment after every commit."
-
           curl -s -H "Authorization: token $GITHUB_TOKEN" \
                -X POST \
-               -d "{\"body\": \"$COMMENT_BODY\"}" \
+               -d "{\"body\": \"/Please remember to add an '/improve' comment after adding new commits\"}" \
                "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"

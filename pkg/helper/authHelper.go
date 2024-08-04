@@ -2,12 +2,13 @@ package helper
 
 import (
 	"errors"
+
 	"github.com/labstack/echo/v4"
 )
 
 func CheckUserType(c echo.Context, role string) error {
-	userType := c.Get("user_type")
-	if userType != role {
+	userType := c.Request().Header.Get("user_type")
+	if userType != "ADMIN" {
 		err := errors.New("unauthorised to access this resource")
 		return err
 	}

@@ -3,9 +3,9 @@ package main
 import (
 	"chat-app/api/controller"
 	middlewares "chat-app/pkg/middleware"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"os"
+
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -16,9 +16,9 @@ func main() {
 	}
 
 	e := echo.New()
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 
-	controller.SetupUserRoutes(e)
+	controller.Setupe(e)
 	authRoutes := e.Group("")
 	authRoutes.Use(middlewares.AuthenticationMiddleware)
 

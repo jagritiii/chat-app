@@ -15,7 +15,9 @@ import (
 var clientInstance *mongo.Client
 var clientInstanceError error
 var mongoOnce sync.Once
-
+func init(){
+	clientInstance = DBinstance()
+}
 // DBinstance returns a singleton MongoDB client instance
 func DBinstance() *mongo.Client {
 	mongoOnce.Do(func() {

@@ -6,15 +6,15 @@ import (
 	"chat-app/pkg/mongodb"
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
-	"log"
-	"strconv"
-	"time"
 )
 
 var userCollection *mongo.Collection = mongodb.OpenCollection("user")
@@ -108,44 +108,54 @@ func Login(c echo.Context) (model.User, error) {
 	return foundUser, nil
 }
 
-func GetUsers(c echo.Context) ([]bson.M, error) {
+func GetUsers(c echo.Context) ([]model.User, error) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
-	recordPerPage, err := strconv.Atoi(c.QueryParam("recordPerPage"))
-	if err != nil || recordPerPage < 1 {
-		recordPerPage = 10
-	}
+	// recordPerPage, err := strconv.Atoi(c.QueryParam("recordPerPage"))
+	// if err != nil || recordPerPage < 1 {
+	// 	recordPerPage = 10
+	// }
 
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil || page < 1 {
-		page = 1
-	}
+	// page, err := strconv.Atoi(c.QueryParam("page"))
+	// if err != nil || page < 1 {
+	// 	page = 1
+	// }
 
-	startIndex := (page - 1) * recordPerPage
+	// startIndex := (page - 1) * recordPerPage
 
-	matchStage := bson.D{{"$match", bson.D{{}}}}
-	projectStage := bson.D{
-		{"$project", bson.D{
-			{"_id", 0},
-			{"total_count", 1},
-			{"user_items", bson.D{{"$slice", []interface{}{"$data", startIndex, recordPerPage}}}},
-		}},
-	}
+	// matchStage := bson.D{{"$match", bson.D{{}}}}
+	// projectStage := bson.D{
+	// 	{"$project", bson.D{
+	// 		{"_id", 0},
+	// 		{"total_count", 1},
+	// 		{"user_items", bson.D{{"$slice", []interface{}{"$data", startIndex, recordPerPage}}}},
+	// 	}},
+	// }
 
-	result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
-		matchStage, projectStage,
-	})
+	// result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
+	// 	matchStage, projectStage,
+	// })
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error occurred while listing user items: %w", err)
+	// }
+
+	// var allUsers []bson.M
+	// if err = result.All(ctx, &allUsers); err != nil {
+	// 	return nil, fmt.Errorf("error occurred while decoding user items: %w", err)
+	// }
+	var documents []model.User
+	cursor, err := userCollection.Find(ctx, bson.M{})
 	if err != nil {
-		return nil, fmt.Errorf("error occurred while listing user items: %w", err)
+		return documents, err
+	}
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &documents); err != nil {
+		return documents, err
 	}
 
-	var allUsers []bson.M
-	if err = result.All(ctx, &allUsers); err != nil {
-		return nil, fmt.Errorf("error occurred while decoding user items: %w", err)
-	}
-
-	return allUsers, nil
+	return documents, nil
 }
 
 func HashPassword(password string) string {

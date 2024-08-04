@@ -1,20 +1,41 @@
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review]
+    types: [opened, reopened, ready_for_review, synchronize]
   issue_comment:
+
 jobs:
   pr_agent_job:
-    if: ${{ github.event.sender.type != 'Bot' }}
+    if: ${{ github.event.sender.type != 'Bot' && github.event.action != 'synchronize' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
       contents: write
-    name: Run pr agent on every pull request, respond to user comments
+    name: Run PR Agent on PR Events, Respond to User Comments
     steps:
-      - name: PR Agent action step
+      - name: PR Agent Action Step
         id: pragent
         uses: Codium-ai/pr-agent@main
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  comment_on_commit:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    name: Post `/improve` Comment After Commit
+    steps:
+      - name: Set up jq
+        run: sudo apt-get install jq -y
+
+      - name: Post `/improve` Comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(jq -r .pull_request.number < "$GITHUB_EVENT_PATH")
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+               -X POST \
+               -d "{\"body\": \"Please remember to add an '/improve' comment after adding new commits\"}" \
+               "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
